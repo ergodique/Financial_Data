@@ -204,10 +204,3 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 - `--start-date`/`--end-date` parametrelerini kontrol et
 - Debug loglarında tarih değerlerini gözlemle
 
-### Test Araçları
-
-**Repair Mode Testi için veri silme:**
-```bash
-python remove_last_records.py data/tefas_full_2yrs.parquet
-# → Her fondan son 2 kaydı siler, repair testi için eksik veri oluşturur
-``` 
