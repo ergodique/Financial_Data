@@ -1,0 +1,18 @@
+# Data files
+*.parquet
+*.xlsx
+*.csv
+~$*
+
+# Logs
+log/*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Test files
+*test*.parquet
+*debug*.parquet
+*backup*.parquet 
