@@ -44,18 +44,19 @@ class YahooFinanceDownloader:
         "SPY",          # S&P 500 ETF
         "QQQ",          # NASDAQ 100 ETF  
         "IWM",          # Russell 2000 ETF
+        "DIA",          # S&P 100 ETF
 
         
-        # Avrupa Borsası
-        "EFA",          # MSCI EAFE ETF
-        "VEA",          # FTSE Developed Markets ETF
-        "EWG",          # Germany ETF
-        "EWU",          # United Kingdom ETF
+        # # Avrupa Borsası
+        # "EFA",          # MSCI EAFE ETF
+        # "VEA",          # FTSE Developed Markets ETF
+        # "EWG",          # Germany ETF
+        # "EWU",          # United Kingdom ETF
         
-        # Gelişen Piyasalar
-        "EEM",          # Emerging Markets ETF
-        "VWO",          # FTSE Emerging Markets ETF
-        "FXI",          # China Large-Cap ETF
+        # # Gelişen Piyasalar
+        # "EEM",          # Emerging Markets ETF
+        # "VWO",          # FTSE Emerging Markets ETF
+        # "FXI",          # China Large-Cap ETF
         
         
         # Kripto (Yahoo'da mevcut olanlar)
@@ -361,12 +362,13 @@ class YahooFinanceDownloader:
             # Sırala ve duplikatları temizle
             df = df.sort_values(['ticker', 'tarih']).drop_duplicates()
             
+            # Çıktı yolunu düzgün oluştur
+            output_path = Path(self.output_filename)
+            
             # Data klasörünü oluştur
-            data_dir = Path("data")
-            data_dir.mkdir(exist_ok=True)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
             
             # Parquet dosyasına kaydet
-            output_path = data_dir / self.output_filename
             df.to_parquet(output_path, index=False)
             
             # Excel'e de kaydet (analiz için)
