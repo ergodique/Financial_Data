@@ -93,6 +93,14 @@ def compute_rolling_returns_wide(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("Wide format'ta getiri hesaplamaları başlıyor...")
     
     df = df.sort_values('tarih').copy()
+    # Fiyatı 0 olan hücreleri 1'e çek (getiri hesaplanmadan önce)
+    # Böylece sıfıra bölme veya aşırı getiri sorunlarını önleriz
+    price_columns = [col for col in df.columns if col.endswith('_fiyat')]
+    if price_columns:
+        zero_count = (df[price_columns] == 0).sum().sum()
+        if zero_count > 0:
+            logger.info("Fiyatı 0 olan %d hücre 1'e çekiliyor", zero_count)
+            df[price_columns] = df[price_columns].replace(0, 1)
     
     # Fiyat kolonlarını bul
     price_columns = [col for col in df.columns if col.endswith('_fiyat')]
