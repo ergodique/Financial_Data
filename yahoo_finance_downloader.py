@@ -47,16 +47,16 @@ class YahooFinanceDownloader:
         "DIA",          # S&P 100 ETF
 
         
-        # # Avrupa Borsası
-        # "EFA",          # MSCI EAFE ETF
-        # "VEA",          # FTSE Developed Markets ETF
-        # "EWG",          # Germany ETF
-        # "EWU",          # United Kingdom ETF
+        # Avrupa Borsası
+        "EFA",          # MSCI EAFE ETF
+        "VEA",          # FTSE Developed Markets ETF
+        "EWG",          # Germany ETF
+        "EWU",          # United Kingdom ETF
         
-        # # Gelişen Piyasalar
-        # "EEM",          # Emerging Markets ETF
-        # "VWO",          # FTSE Emerging Markets ETF
-        # "FXI",          # China Large-Cap ETF
+        # Gelişen Piyasalar
+        "EEM",          # Emerging Markets ETF
+        "VWO",          # FTSE Emerging Markets ETF
+        "FXI",          # China Large-Cap ETF
         
         
         # Kripto (Yahoo'da mevcut olanlar)

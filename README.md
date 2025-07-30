@@ -194,13 +194,13 @@ python yahoo_finance_downloader.py --months 3 --tickers "SPY,QQQ,TSLA"
 # Paralel indirme
 python yahoo_finance_downloader.py --months 6 --workers 4
 ```
+```bash
 # ÖZEL TARİH ARALIĞI –  6 iş parçacığı, çıkış dosyası özelleştirilmiş
-
 python yahoo_finance_downloader.py --start-date 20230101 --end-date 20230701 --workers 6 --outfile data/yahoo_2023H1.parquet
 
 # REPAIR modu –  eksik verileri tamamla, yeni dosyaya yaz
-
 python yahoo_finance_downloader.py --repair --input data/yahoo_finance_data.parquet --outfile data/yahoo_finance_data_fixed.parquet
+```
 
 
 ### Wide Format İşleme

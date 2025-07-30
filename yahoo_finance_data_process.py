@@ -28,7 +28,7 @@ WINDOWS = {
 class YahooFinanceDataProcessor:
     """Yahoo Finance verilerini işleyen class"""
     
-    def __init__(self, input_file: str, output_file: Optional[str] = None, excel_file: Optional[str] = None, create_wide_format: bool = True):
+    def __init__(self, input_file: str, output_file: Optional[str] = None, excel_file: Optional[str] = None, create_wide_format: bool = True, wide_only: bool = True):
         """
         Args:
             input_file: Giriş parquet dosyası
@@ -51,6 +51,8 @@ class YahooFinanceDataProcessor:
         
         # Wide format flag'ini sakla
         self.create_wide_format = create_wide_format
+        # wide_only: uzun format dosyalarını hiçbir zaman kaydetme (varsayılan: True)
+        self.wide_only = wide_only
         
         if output_file:
             output_path = Path(output_file)
@@ -239,18 +241,25 @@ class YahooFinanceDataProcessor:
         """Verileri parquet ve excel olarak kaydet"""
         logger.info(f"Long format sütun listesi: {df.columns.tolist()}")
         
-        # Long format'ı kaydet
-        self.output_path.parent.mkdir(exist_ok=True)
-        df.to_parquet(self.output_path, engine="pyarrow", compression="zstd", index=False)
-        logger.info(f"Long format parquet: {self.output_path}")
+        # Eğer sadece wide format isteniyorsa long format dosyalarını atla
+        if not self.wide_only:
+            self.output_path.parent.mkdir(exist_ok=True)
+            df.to_parquet(self.output_path, engine="pyarrow", compression="zstd", index=False)
+            logger.info(f"Long format parquet: {self.output_path}")
+            
+            df.to_excel(self.excel_path, index=False)
+            logger.info(f"Long format excel: {self.excel_path}")
+        else:
+            logger.info("--wide-only aktif: long format dosyaları kaydedilmeyecek")
         
-        df.to_excel(self.excel_path, index=False)
-        logger.info(f"Long format excel: {self.excel_path}")
-        
-        # Wide format varsa onu da kaydet
+        # Wide format varsa onu kaydet
         if wide_df is not None:
-            wide_parquet_path = self.output_path.with_stem(self.output_path.stem + "_wide")
-            wide_excel_path = self.excel_path.with_stem(self.excel_path.stem + "_wide")
+            if self.wide_only:
+                wide_parquet_path = self.output_path  # Kullanıcının verdiği çıktı adı
+                wide_excel_path = self.excel_path
+            else:
+                wide_parquet_path = self.output_path.with_stem(self.output_path.stem + "_wide")
+                wide_excel_path = self.excel_path.with_stem(self.excel_path.stem + "_wide")
             
             wide_df.to_parquet(wide_parquet_path, engine="pyarrow", compression="zstd", index=False)
             logger.info(f"Wide format parquet: {wide_parquet_path}")
@@ -283,7 +292,7 @@ def main():
     parser.add_argument("--input", type=str, required=True, help="Giriş Parquet yolu")
     parser.add_argument("--output", type=str, default="", help="Çıkış Parquet yolu (varsayılan: data/input_wide.parquet)")
     parser.add_argument("--excel", type=str, default="", help="Excel çıktı yolu (varsayılan: data/output.xlsx)")
-    parser.add_argument("--no-wide", action="store_true", help="Wide format oluşturma (ML için explode etme)")
+    parser.add_argument("--no-wide", action="store_true", help="Wide format oluşturma (varsayılan: aktif). --no-wide ile kapatılır")
     
     args = parser.parse_args()
     
@@ -294,7 +303,8 @@ def main():
         input_file=args.input,
         output_file=args.output if args.output else None,
         excel_file=args.excel if args.excel else None,
-        create_wide_format=create_wide
+        create_wide_format=create_wide,
+        wide_only=True
     )
     
     processor.process()
